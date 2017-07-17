@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Barrage</title>
+    <link rel="stylesheet" href="../src/css/style.css">
+</head>
+<body>
+    <div id="wrapper">
+        <div class="comment-layer">
+        </div>
+        <video src="../src/video/zhou.mp4" controls="controls"></video>
+    </div>
+    <script src="../barrage_json.js"></script>
+    <script src="../lib/zepto-1.1.6.js"></script>
+    <script src="../src/js/barrage.js"></script>
+    <script>
+        var barrage = new Barrage({
+            container: '.comment-layer',
+            mode: 'recorded',
+            layout: 'half',
+        });
+        var last_time = -10000000;
+
+        barrage.pushData(barrage_json);
+
+        $('video').on('play', function(a) {
+            // 暂停后重新播放时，两次时间戳不会完全一样，但相差不会大于1s
+            if (Math.abs(this.currentTime - last_time) < 1 && this.currentTime !== last_time) {
+                barrage.start(true);
+            } else { // 如果完全一样，那就是拖动进度条了，这种情况需要reset
+                barrage.setTime(this.currentTime);
+                barrage.reset();
+                // barrage.removeNotEnter();
+                barrage.start();
+            }
+        });
+
+        $('video').on('pause', function() {
+            barrage.stop();
+            last_time = this.currentTime;
+        });
+
+
+    </script>
+</body>
+</html>
