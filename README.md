@@ -5,12 +5,12 @@
 
 # 使用方法(Usage)
 1. 引入 JS
-```
+```HTML
 <script src="kd-barrage.js"></script>
 ```
 
 2. 调用示意
-```
+```Javascript
 var barrage = new Barrage({
     container: '.comment-layer',
     layout: 'half',
@@ -28,7 +28,7 @@ $('video').on('pause', function() {
 ```
 
 # 配置参数(Config)
-```
+```Javascript
 new Barrage(option);
 ```
 `option`包括：
@@ -43,7 +43,7 @@ new Barrage(option);
 * `gapWidth`(**Number**): 每条弹幕最小水平空隙，默认值`15`
 * `cleanSetSize`(**Number**): 待清理弹幕分包大小，当指定条数的弹幕展示完毕时，执行一次DOM清理，默认值`10`。
 * `style`(**Object**): 通用弹幕样式，可自定义弹幕样式，驼峰书写 CSS keyname，定义的样式会覆盖默认值的同名项。默认值：
-```
+```CSS
 {
     color: '#ffffff',
     fontFamily: '黑体',
@@ -57,14 +57,14 @@ new Barrage(option);
 # 实例方法(Methods)
 
 ## .pushData(items[, isCover])
-```
+```Javascript
 @param items {array|object} 弹幕元数据
 @param isCover {boolean} 是否覆盖元数据，只有数据类型为`object`时此选项才生效，默认值为`true`，`false`时则只在指定秒数插入数据
 ```
 添加弹幕元数据（时间，内容）到缓存池中，录播类视频使用，在视频到达指定时间时组件将会自动显示弹幕。
 
 `items`格式约定：
-```
+```Javascript
 // array
 [
     {
@@ -105,14 +105,14 @@ new Barrage(option);
 ```
 
 ## .setTime(seconds[, isStart])
-```
+```Javascript
 @param seconds {number} 设置当前弹幕进度，单位`s`
 @param isStart {boolean} 是否立即调用`start()`方法启动弹幕滚动计时，默认为`false`
 ```
 弹幕组件没有直接监听视频进度改变事件，组件内部有计时器模拟视频进度，但需要调用方在一些合适的时机自行设置时间起点。
 
 ## .start([isContinue])
-```
+```Javascript
 @param isContinue {boolean} 可选值，表明是否属于继续播放，默认值为`false`
 ```
 启动弹幕滚动，并暂停组件内部的视频进度计时器。
@@ -125,7 +125,7 @@ new Barrage(option);
 暂停弹幕
 
 ## .showByTime(seconds)
-```
+```Javascript
 @param seconds {number} 指定时间的弹幕，单位`s`
 ```
 立即将缓存池中指定时间的弹幕显示在幕布上，此方法一般不需调用方主动调用。
@@ -134,7 +134,7 @@ new Barrage(option);
 清空并重置弹幕容器，此操作只会清空 DOM 结点而不会删除`data`树上的数据。调用`reset()`方法后，弹幕不会自动暂停，如需暂停则需自行调用`stop()`方法。此方法一般在用户拖动进度条时调用。
 
 ## .setShowTime(ms)
-```
+```Javascript
 @param ms {number} 弹幕滚动速度，单位`ms`
 ```
 动态修改整体弹幕的滚动速度，在窗口尺寸发生变化时可调用。
@@ -143,20 +143,20 @@ new Barrage(option);
 立即清除已经加入 DOM 队列但尚未进入屏幕的弹幕，此方法的使用场景一般是当用户拖动进度条后，希望保留当前已经进入屏幕的弹幕而清除为进入的弹幕。
 
 ## .showByTime(seconds)
-```
+```Javascript
 @param seconds {number} 进度秒数，单位`s`
 ```
 立即将指定秒数的弹幕加入 DOM 中，此方法不需要开发者主动调用，但在某些特殊场景可以使用。
 
 ## .add(text[, style])
-```
+```Javascript
 @param text {string|object} 弹幕内容，可以是字符串，也可以是弹幕对象
 @param style {object} 弹幕样式，可选，默认使用全局配置项
 ```
 立即将新弹幕加入到 DOM 中，此方法可用于添加需要即时显示的弹幕，例如用户发表弹幕时。
 
 `text`弹幕对象格式：
-```
+```Javascript
 {
     "ms": 0, // 可选项
     "tx": "ganyiwei的测试弹幕_1127",
@@ -165,14 +165,14 @@ new Barrage(option);
 ```
 
 ## .removeDataByTimeRange(minSeconds, maxSeconds)
-```
+```Javascript
 @param minSeconds {number} 开始区间秒数，单位`s`
 @param manSeconds {number} 结束区间秒数，单位`s`
 ```
 清除指定秒数区间中`data`树上的数据。
 
 ## .hasData(seconds)
-```
+```Javascript
 @param seconds {number} 进度秒数，单位`s`
 @return {boolean}
 ```
