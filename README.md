@@ -31,18 +31,18 @@ $('video').on('pause', function() {
 ```Javascript
 new Barrage(option);
 ```
-**`option`**包括：
-* **`container`**(**Stirng**): 必填，弹幕容器选择器字符串，容器需绝对定位，组件会自动获取容器宽高作为幕布。
-* **`maxLength`**(**Number**): 弹幕长度限制，英文为 1，中文为 2，溢出部分将用...代替，默认值`30`。
-* **`isHtmlEncode`**(**Boolean**): 是否转义 HTML 实体字符，默认值`true`。
-* **`layout`**(**Stirng**): 弹幕布局方式，`top`三分之一，`half`半屏,`full`全屏，默认值`half`。
-* **`mode`**(**String**): 视频类型，`recorded`录播、`live`直播，两种类型的视频对弹幕的调用方案不一样，默认值`**recorded**`。
-* **`showTime`**(**Number**): 每条弹幕滚动时间，单位`ms`，默认值`3500`。
-* **`line_height`**(**Number**): 弹幕行高，单位`px`，默认值`18`。
-* **`fontSize`**(**Number**): 字体大小，单位`px`，默认值`15`。
-* **`gapWidth`**(**Number**): 每条弹幕最小水平空隙，默认值`15`
-* **`cleanSetSize`**(**Number**): 待清理弹幕分包大小，当指定条数的弹幕展示完毕时，执行一次DOM清理，默认值`10`。
-* **`style`**(**Object**): 通用弹幕样式，可自定义弹幕样式，驼峰书写 CSS keyname，定义的样式会覆盖默认值的同名项。默认值：
+`option`包括：
+* **`container`**(Stirng): 必填，弹幕容器选择器字符串，容器需绝对定位，组件会自动获取容器宽高作为幕布。
+* **`maxLength`**(Number): 弹幕长度限制，英文为 1，中文为 2，溢出部分将用...代替，默认值`30`。
+* **`isHtmlEncode`**(Boolean): 是否转义 HTML 实体字符，默认值`true`。
+* **`layout`**(Stirng): 弹幕布局方式，`top`三分之一，`half`半屏,`full`全屏，默认值`half`。
+* **`mode`**(String): 视频类型，`recorded`录播、`live`直播，两种类型的视频对弹幕的调用方案不一样，默认值`**recorded**`。
+* **`showTime`**(Number): 每条弹幕滚动时间，单位`ms`，默认值`3500`。
+* **`line_height`**(Number): 弹幕行高，单位`px`，默认值`18`。
+* **`fontSize`**(Number): 字体大小，单位`px`，默认值`15`。
+* **`gapWidth`**(Number): 每条弹幕最小水平空隙，默认值`15`
+* **`cleanSetSize`**(Number): 待清理弹幕分包大小，当指定条数的弹幕展示完毕时，执行一次DOM清理，默认值`10`。
+* **`style`**(Object): 通用弹幕样式，可自定义弹幕样式，驼峰书写 CSS keyname，定义的样式会覆盖默认值的同名项。默认值：
 ```Javascript
 {
     color: '#ffffff',
@@ -52,7 +52,7 @@ new Barrage(option);
     fontWeight: 'bold', 
 }
 ```
-* **`self_style`**(**Object**)：用户个人弹幕的样式，定义的样式会覆盖通用弹幕样式同名项。默认值`{ color: '#74bb4f' }`。
+* **`self_style`**(Object)：用户个人弹幕的样式，定义的样式会覆盖通用弹幕样式同名项。默认值`{ color: '#74bb4f' }`。
 
 # 实例方法(Methods)
 
