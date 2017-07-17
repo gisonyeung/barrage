@@ -43,7 +43,7 @@ new Barrage(option);
 * `gapWidth`(**Number**): 每条弹幕最小水平空隙，默认值`15`
 * `cleanSetSize`(**Number**): 待清理弹幕分包大小，当指定条数的弹幕展示完毕时，执行一次DOM清理，默认值`10`。
 * `style`(**Object**): 通用弹幕样式，可自定义弹幕样式，驼峰书写 CSS keyname，定义的样式会覆盖默认值的同名项。默认值：
-```CSS
+```Javascript
 {
     color: '#ffffff',
     fontFamily: '黑体',
