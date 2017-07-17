@@ -36,7 +36,7 @@ new Barrage(option);
 * **`maxLength`**(Number): 弹幕长度限制，英文为 1，中文为 2，溢出部分将用...代替，默认值`30`。
 * **`isHtmlEncode`**(Boolean): 是否转义 HTML 实体字符，默认值`true`。
 * **`layout`**(Stirng): 弹幕布局方式，`top`三分之一，`half`半屏,`full`全屏，默认值`half`。
-* **`mode`**(String): 视频类型，`recorded`录播、`live`直播，两种类型的视频对弹幕的调用方案不一样，默认值`**recorded**`。
+* **`mode`**(String): 视频类型，`recorded`录播、`live`直播，两种类型的视频对弹幕的调用方案不一样，默认值`recorded`。
 * **`showTime`**(Number): 每条弹幕滚动时间，单位`ms`，默认值`3500`。
 * **`line_height`**(Number): 弹幕行高，单位`px`，默认值`18`。
 * **`fontSize`**(Number): 字体大小，单位`px`，默认值`15`。
