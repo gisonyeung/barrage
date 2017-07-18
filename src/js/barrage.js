@@ -53,7 +53,7 @@
             */
             mode: 'recorded',
             layout: 'half', // 布局方式：'top'三分之一, 'half'半屏, 'full'全屏
-            line_height: 18, // 弹幕行高
+            lineHeight: 18, // 弹幕行高
             fontSize: 15, // 弹幕字体大小 
             gapWidth: 15, // 每条弹幕空隙
             showTime: 3500, // 弹幕滚屏时间
@@ -106,18 +106,16 @@
             height: this.container.height(),
             width: this.container.width(),
         }
-        var _layoutMap = {
+
+        this._layoutMap = {
             'top': 0.3333333333,
             'half': 0.5,
             'full': 1
         }
 
         // 弹幕行数
-        this.rowNum = parseInt(this.meta.height * _layoutMap[this.layout] / this.line_height, 10);
         this.barragePool = {}; // 弹幕缓存池，存储变量到DOM的映射
         this.data = {}; // 弹幕data，key:seconds value:barrage array
-        this.rowMeta = Array(this.rowNum); // 记录每行宽度，用于瀑布流排布
-        this._resetZero(this.rowMeta);
         this.index = 0; // 弹幕ID下标
         this.timerId = null; // 弹幕轮询计时器ID
         this.tickId = null; // 弹幕rAF动画ID
@@ -126,14 +124,15 @@
         this.diff = this.msDiff * 1000 / 60; // 每帧位移
         this.allDiff = 0; // 滚屏已经位移的距离
         this.deleteQueue = []; // 待删除弹幕索引队列
+        this._updateRowMeta(); // 初始化行高行数信息
 
         this._init(); // 初始化位置
 
         $(window).on('resize', function() {
-            self.meta.height = self.container.height();
-            self.meta.width = self.container.width();
-            self.msDiff = self.container.width() / self.showTime; // 每毫秒位移
-            self.diff = self.msDiff * 1000 / 60; // 每帧位移
+            self.setContainerSize({
+                width: self.container.width(),
+                height: self.container.height()
+            })
         });
 
         // this.container.css({
@@ -331,6 +330,12 @@
         _init: function () {
             this.container.css('transform', 'translateX(0)');
         },
+        _updateRowMeta: function() {
+            // 弹幕行数
+            this.rowNum = parseInt(this.meta.height * this._layoutMap[this.layout] / this.lineHeight, 10);
+            this.rowMeta = Array(this.rowNum); // 记录每行宽度，用于瀑布流排布
+            this._resetZero(this.rowMeta);
+        },
         add: function (text, style) {
 
             if (text == null) return false;
@@ -352,7 +357,7 @@
             
 
             opt.left = this.rowMeta[min] + msDistance + this.gapWidth;
-            opt.top = min * this.line_height;
+            opt.top = min * this.lineHeight;
             opt.index = this.index++;
             var cutResult = this._cutString(text);
             if (this.isHtmlEncode) {
@@ -437,7 +442,7 @@
                 clearTimeout(this.timerId);
             }
         },
-        reset: function() {
+        clean: function() {
             this._init();
             this.container.empty();
             this.index = 0;
@@ -448,7 +453,7 @@
         },
         stopAnimationWhenEmpty: function() {
             if ($.isEmptyObject(this.barragePool)) {
-                this.reset();
+                this.clean();
                 this.stop(true);
                 this.stopAnimation = true;
             }
@@ -464,6 +469,35 @@
             }
             this._reDequeue();
         },
+        setContainerSize: function(size) {
+            this.meta.height = size.height;
+            this.meta.width = size.width;
+            this.msDiff = size.width / this.showTime; // 每毫秒位移
+            this.diff = this.msDiff * 1000 / 60; // 每帧位移
+        },
+        setProps: function(props) {
+            if (this._typeof(props) !== 'object') return;
+
+            if (props.fontSize && this.fontSize != props.fontSize) {
+                this.container.children().each(function(index,) {
+                    $(this).css('font-size', parseInt(props.fontSize, 10) + 'px');
+                });
+            }
+            this.fontSize = parseInt(props.fontSize, 10) || this.fontSize;
+            this.gapWidth = parseInt(props.gapWidth, 10) || this.gapWidth;
+            this.maxLength = parseInt(props.maxLength, 10) || this.maxLength;
+        },
+        reset: function(props) {
+            this.clean();
+
+            if (this._typeof(props) === 'object') {
+                this.lineHeight = parseInt(props.lineHeight, 10) || this.lineHeight;
+                this.layout = props.layout || this.layout;
+                this._updateRowMeta();
+            }
+        },
+
+
         // removeHasOut: function() {
         //     var barragePool = this.barragePool;
         //     for (var ref in barragePool) {

@@ -38,7 +38,7 @@ new Barrage(option);
 * **`layout`**(Stirng): 弹幕布局方式，`top`三分之一，`half`半屏,`full`全屏，默认值`half`。
 * **`mode`**(String): 视频类型，`recorded`录播、`live`直播，两种类型的视频对弹幕的调用方案不一样，默认值`recorded`。
 * **`showTime`**(Number): 每条弹幕滚动时间，单位`ms`，默认值`3500`。
-* **`line_height`**(Number): 弹幕行高，单位`px`，默认值`18`。
+* **`lineHeight`**(Number): 弹幕行高，单位`px`，默认值`18`。
 * **`fontSize`**(Number): 字体大小，单位`px`，默认值`15`。
 * **`gapWidth`**(Number): 每条弹幕最小水平空隙，默认值`15`
 * **`cleanSetSize`**(Number): 待清理弹幕分包大小，当指定条数的弹幕展示完毕时，执行一次DOM清理，默认值`10`。
@@ -130,8 +130,27 @@ new Barrage(option);
 ```
 立即将缓存池中指定时间的弹幕显示在幕布上，此方法一般不需调用方主动调用。
 
-## .reset()
-清空并重置弹幕容器，此操作只会清空 DOM 结点而不会删除`data`树上的数据。调用`reset()`方法后，弹幕不会自动暂停，如需暂停则需自行调用`stop()`方法。此方法一般在用户拖动进度条时调用。
+## .clean()
+清空所有弹幕，此操作只会清空 DOM 结点而不会删除`data`树上的数据。调用`clean()`方法后，弹幕不会自动暂停，如需暂停则需自行调用`stop()`方法。此方法一般在用户拖动进度条时调用。
+
+## .reset(config)
+```Javascript
+@param config {object} 可选，需要修改的布局属性
+```
+重设布局属性并清空当前弹幕。该方法会在内部调用`clean()`方法清空弹幕，并修改布局属性：`lineHeight`、`layout`，如不传入参数，则相当于调用`clean()`方法。
+```Javascript
+barrage.reset({
+    lineHeight: 20,
+    layout: 'full'
+})
+```
+
+# .setProps(props)
+```Javascript
+@param props {object} 需要修改的属性
+```
+可立即修改一些与布局无关的属性，不会重新初始化弹幕。目前支持修改的属性：`fontSize`、`gapWidth`、`maxLength`。修改`fontSize`时也会一同修改当前已经生成的弹幕 DOM 节点的字体大小。
+
 
 ## .setShowTime(ms)
 ```Javascript

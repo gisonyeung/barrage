@@ -12,6 +12,18 @@
         </div>
         <video src="../src/video/zhou.mp4" controls="controls"></video>
     </div>
+    <div id="handle-bar">
+        <div>
+            <input type="text" class="form-control" value="15">
+            <button class="button" id="setFont" placeholder="fontSize">修改字体大小</button>
+        </div>
+        <div>
+            <input type="text" class="form-control" placeholder="lineHeight(18)">
+            <input type="text" class="form-control" placeholder="layout(half)">
+            <button class="button" id="reset">reset()</button>
+        </div>
+        <div></div>
+    </div>
     <script src="../barrage_json.js"></script>
     <script src="../lib/zepto-1.1.6.js"></script>
     <script src="../src/js/barrage.js"></script>
@@ -30,8 +42,8 @@
             if (Math.abs(this.currentTime - last_time) < 1 && this.currentTime !== last_time) {
                 barrage.start(true);
             } else { // 如果完全一样，那就是拖动进度条了，这种情况需要reset
+                barrage.clean();
                 barrage.setTime(this.currentTime);
-                barrage.reset();
                 // barrage.removeNotEnter();
                 barrage.start();
             }
@@ -40,6 +52,20 @@
         $('video').on('pause', function() {
             barrage.stop();
             last_time = this.currentTime;
+        });
+
+        // 修改字体大小
+        $('#setFont').on('click', function() {
+            var value = $('.form-control')[0].value;
+            barrage.setProps({fontSize: value});
+        });
+
+        // reset
+        $('#reset').on('click', function() {
+            barrage.reset({
+                lineHeight: $('.form-control')[1].value,
+                layout: $('.form-control')[2].value
+            })
         });
 
 

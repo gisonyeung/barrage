@@ -7,7 +7,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #000;
+    background-color: #fff;
     overflow: hidden;
 }
 
@@ -51,3 +51,29 @@ video {
 .barrage.self {
     border: 1px solid rgba(255, 255, 255, 0.5);
 }
+
+#handle-bar > div {
+    margin-top: 20px;
+    margin-left: 5px;
+}
+
+.form-control {
+    display: block;
+    width: 120px;
+    padding: 5px 10px;
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-bottom: 5px;
+}
+
+.button {
+    padding: 5px 10px;
+    color: #fff;
+    background-color: #2196f3;
+    border: 1px solid #0a6bb9;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+}
+
