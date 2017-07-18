@@ -145,7 +145,7 @@ barrage.reset({
 })
 ```
 
-# .setProps(props)
+## .setProps(props)
 ```Javascript
 @param props {object} 需要修改的属性
 ```
