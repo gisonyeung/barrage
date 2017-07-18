@@ -295,6 +295,8 @@
                     this.stopAnimationWhenEmpty();
                     queue.shift();
                 }
+            } else {
+                this.stopAnimationWhenEmpty();
             }
             queue = null;
         },
