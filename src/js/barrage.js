@@ -481,7 +481,7 @@
             if (this._typeof(props) !== 'object') return;
 
             if (props.fontSize && this.fontSize != props.fontSize) {
-                this.container.children().each(function(index,) {
+                this.container.children().each(function() {
                     $(this).css('font-size', parseInt(props.fontSize, 10) + 'px');
                 });
             }
