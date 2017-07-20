@@ -125,6 +125,7 @@
         this.allDiff = 0; // 滚屏已经位移的距离
         this.deleteQueue = []; // 待删除弹幕索引队列
         this._updateRowMeta(); // 初始化行高行数信息
+        this.playStatus = 0; // 播放状态
 
         this._init(); // 初始化位置
 
@@ -211,6 +212,7 @@
         },
         _updateTime: function(isRestart) {
             if (this.mode !== 'recorded') return;
+            if (this.timerId) clearTimeout(this.timerId);
 
             var self = this;
             if (!isRestart) {
@@ -429,10 +431,12 @@
                 fragment = null;
             }
         },
-        setTime: function (seconds, isStart) {
+        setTime: function (seconds) {
             this.currentTime = seconds;
             clearTimeout(this.timerId);
-            isStart && this._updateTime();
+            if (this.playStatus === 1) {
+                this._updateTime();
+            }
         },
         setShowTime: function(ms) {
             this.showTime = ms;
@@ -440,6 +444,7 @@
             this.diff = this.msDiff * 1000 / 60; // 每帧位移
         },
         start: function(isRestart) {
+            this.playStatus = 1;
             this._updateTime(isRestart);
             this._safeTick();
         },
@@ -448,6 +453,7 @@
             this.tickId = null;
             if (!onlyAnimation) {
                 clearTimeout(this.timerId);
+                this.playStatus = 0;
             }
         },
         clearBarrage: function() {
@@ -457,7 +463,7 @@
             this.barragePool = {};
             this.deleteQueue = [];
             this.allDiff = 0;
-            this._resetZero(this.rowMeta);
+            this._updateRowMeta();
         },
         stopAnimationWhenEmpty: function() {
             if ($.isEmptyObject(this.barragePool)) {

@@ -107,12 +107,13 @@ new Barrage(option);
 ## .clearData()
 清除内存缓存池中的弹幕元数据。
 
-## .setTime(seconds[, isStart])
+## .setTime(seconds)
 ```Javascript
 @param seconds {number} 设置当前弹幕进度，单位`s`
-@param isStart {boolean} 是否立即调用`start()`方法启动弹幕滚动计时，默认为`false`
 ```
 弹幕组件没有直接监听视频进度改变事件，组件内部有计时器模拟视频进度，但需要调用方在一些合适的时机自行设置时间起点。
+
+调用该方法后，弹幕播放状态不会改变。
 
 ## .start([isContinue])
 ```Javascript
