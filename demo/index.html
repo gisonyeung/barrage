@@ -42,7 +42,7 @@
             if (Math.abs(this.currentTime - last_time) < 1 && this.currentTime !== last_time) {
                 barrage.start(true);
             } else { // 如果完全一样，那就是拖动进度条了，这种情况需要reset
-                barrage.clean();
+                barrage.clearBarrage();
                 barrage.setTime(this.currentTime);
                 // barrage.removeNotEnter();
                 barrage.start();

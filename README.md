@@ -61,7 +61,7 @@ new Barrage(option);
 @param items {array|object} 弹幕元数据
 @param isCover {boolean} 是否覆盖元数据，只有数据类型为`object`时此选项才生效，默认值为`true`，`false`时则只在指定秒数插入数据
 ```
-添加弹幕元数据（时间，内容）到缓存池中，录播类视频使用，在视频到达指定时间时组件将会自动显示弹幕。
+添加弹幕元数据（时间，内容）到内存缓存池中，录播类视频使用，在视频到达指定时间时组件将会自动显示弹幕。
 
 `items`格式约定：
 ```Javascript
@@ -104,6 +104,9 @@ new Barrage(option);
 }
 ```
 
+## .clearData()
+清除内存缓存池中的弹幕元数据。
+
 ## .setTime(seconds[, isStart])
 ```Javascript
 @param seconds {number} 设置当前弹幕进度，单位`s`
@@ -130,20 +133,23 @@ new Barrage(option);
 ```
 立即将缓存池中指定时间的弹幕显示在幕布上，此方法一般不需调用方主动调用。
 
-## .clean()
-清空所有弹幕，此操作只会清空 DOM 结点而不会删除`data`树上的数据。调用`clean()`方法后，弹幕不会自动暂停，如需暂停则需自行调用`stop()`方法。此方法一般在用户拖动进度条时调用。
+## .clearBarrage()
+清空所有弹幕，此操作只会清空 DOM 结点而不会删除`data`树上的数据。调用`clearBarrage()`方法后，弹幕不会自动暂停，如需暂停则需自行调用`stop()`方法。此方法一般在用户拖动进度条时调用。
 
 ## .reset(config)
 ```Javascript
 @param config {object} 可选，需要修改的布局属性
 ```
-重设布局属性并清空当前弹幕。该方法会在内部调用`clean()`方法清空弹幕，并修改布局属性：`lineHeight`、`layout`，如不传入参数，则相当于调用`clean()`方法。
+重设布局属性并清空当前弹幕。该方法会在内部调用`clearBarrage()`方法清空弹幕，并修改布局属性：`lineHeight`、`layout`，如不传入参数，则相当于调用`clearBarrage()`方法。
 ```Javascript
 barrage.reset({
     lineHeight: 20,
     layout: 'full'
 })
 ```
+
+## .switch()
+用于切换视频，立即清空弹幕元数据，清空弹幕 DOM 节点，并将弹幕时间置 0。适用于单例 webview 网页。该方法不会调用`stop()`方法。
 
 ## .setProps(props)
 ```Javascript

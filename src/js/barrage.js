@@ -338,7 +338,7 @@
             this.rowMeta = Array(this.rowNum); // 记录每行宽度，用于瀑布流排布
             this._resetZero(this.rowMeta);
         },
-        add: function (text, style) {
+        add: function (text, style, fragment) {
 
             if (text == null) return false;
 
@@ -350,6 +350,9 @@
                 opt.isSelf = text.isSelf || 0;
                 text = text.tx;
             }
+
+            // 判断是否传入了 fragment，否则直接将弹幕 append 到弹幕容器
+            fragment = this._typeof(fragment) === 'array' ? fragment : this.container;
             
             var min = this._findMinIndex();
             var msDistance = (ms % 1000) * this.msDiff;
@@ -366,7 +369,7 @@
                 opt.text = this._htmlEncode(cutResult.text);
             }
             var br_dom = $(this._createBarrage(opt, style));
-            this.container.append(br_dom);
+            fragment.append(br_dom);
             this.barragePool[opt.index] = { 
                 dom: br_dom, 
                 width: this._getBarrageWidth(cutResult.realLen) , 
@@ -418,9 +421,12 @@
         showByTime: function (seconds) {
             var items = this.data[seconds];
             if (this._typeof(this.data[seconds]) === 'array') {
+                var fragment = $(document.createDocumentFragment());
                 for (var i = 0; i < items.length; i++) {
-                    this.add(items[i]);
+                    this.add(items[i], undefined, fragment);
                 }
+                this.container.append(fragment);
+                fragment = null;
             }
         },
         setTime: function (seconds, isStart) {
@@ -444,7 +450,7 @@
                 clearTimeout(this.timerId);
             }
         },
-        clean: function() {
+        clearBarrage: function() {
             this._init();
             this.container.empty();
             this.index = 0;
@@ -455,7 +461,7 @@
         },
         stopAnimationWhenEmpty: function() {
             if ($.isEmptyObject(this.barragePool)) {
-                this.clean();
+                this.clearBarrage();
                 this.stop(true);
                 this.stopAnimation = true;
             }
@@ -490,13 +496,21 @@
             this.maxLength = parseInt(props.maxLength, 10) || this.maxLength;
         },
         reset: function(props) {
-            this.clean();
+            this.clearBarrage();
 
             if (this._typeof(props) === 'object') {
                 this.lineHeight = parseInt(props.lineHeight, 10) || this.lineHeight;
                 this.layout = props.layout || this.layout;
                 this._updateRowMeta();
             }
+        },
+        switch: function() {
+            this.data = {};
+            this.clearBarrage();
+            this.setTime(0);
+        },
+        clearData: function() {
+            this.data = {};
         },
 
 
