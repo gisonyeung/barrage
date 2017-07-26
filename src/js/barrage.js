@@ -184,6 +184,7 @@
             _style = (opt.isSelf == 1 || opt.isSelf === true) ? this.self_style : this.style;
 
             if (this._typeof(style) === 'object') {
+                _style = this._extend(_style);
                 for (var k in style) _style[k] = style[k];
             }
 
@@ -347,7 +348,7 @@
             this.rowMeta = Array(this.rowNum); // 记录每行宽度，用于瀑布流排布
             this._resetZero(this.rowMeta);
         },
-        add: function (text, style, fragment) {
+        add: function (text, style, fragment, isAuto) {
 
             if (text == null) return false;
 
@@ -356,7 +357,7 @@
 
             if (this._typeof(text) === 'object') {
                 ms = text.ms || 0;
-                opt.isSelf = text.isSelf || 0;
+                opt.isSelf = isAuto && !text.isSelf ? 0 : 1;
                 text = text.tx;
             }
 
@@ -432,7 +433,7 @@
             if (this._typeof(this.data[seconds]) === 'array') {
                 var fragment = $(document.createDocumentFragment());
                 for (var i = 0; i < items.length; i++) {
-                    this.add(items[i], undefined, fragment);
+                    this.add(items[i], undefined, fragment, true);
                 }
                 this.container.append(fragment);
                 fragment = null;
