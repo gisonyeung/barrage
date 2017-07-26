@@ -34,8 +34,13 @@
 
     // 能力检查
     var _elementStyle = document.createElement('div').style;
+    var transform = 'transform';
 
-    if (!('transform' in _elementStyle && 'webkitTransform' in _elementStyle)) {
+    if ('transform' in _elementStyle) {
+        transform = 'transform'
+    } else if ('webkitTransform' in _elementStyle) {
+        transform = '-webkit-transform';
+    } else {
         throw 'please use a modern browser'
     }
 
@@ -86,10 +91,11 @@
         if (this._typeof(option.self_style) === 'object') {
             var key;
 
+            // 将默认 self_style 覆盖在默认 style 中
             for (key in _option.self_style) {
                 _option.style[key] = _option.self_style[key];
             }
-
+            // 将用户自定义 self_style 覆盖在上一步操作后的 style 中
             for (key in option.self_style) {
                 _option.style[key] = option.self_style[key];
             }
@@ -161,7 +167,7 @@
             var new_obj = {};
             if (typeof(o) !== 'object') return new_obj;
             for (var k in o) {
-                new_obj[k] = o;
+                new_obj[k] = o[k];
             }
             return new_obj;
         },
@@ -236,7 +242,7 @@
         _tick: function() {
             // this.container.css('left', this.container.css('left').replace('px', '') - this.diff);
             this._addDistanceForAll(this.diff);
-            this.container.css('transform', 'translateX(-' + this.allDiff + 'px)');
+            this.container.css(transform, 'translate3d(-' + this.allDiff + 'px,0,0)');
             this.tickId = window.requestAnimationFrame(this._tick.bind(this));
             this._checkDeleteQueue(); // 检查待删除队列，看是否可以清理某些弹幕
         },
@@ -292,6 +298,7 @@
                 // 屏幕位移大于结束距离，则可以移除该队列
                 if (this.allDiff > queue[0].endDistance + this.meta.width) {
                     for (var i = 0; i < queue[0].indexs.length; i++) {
+                        // console.log('delete:', queue[0].indexs[i]);
                         this._deleteBarrage(queue[0].indexs[i]);
                     }
                     this.stopAnimationWhenEmpty();
