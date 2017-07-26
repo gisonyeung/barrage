@@ -85,17 +85,17 @@
             for (var key in option.style) {
                 _option.style[key] = option.style[key];
             }
-            this.style = this._extend(_option.style);
         }
+        this.style = this._extend(_option.style);
 
         if (this._typeof(option.self_style) === 'object') {
             var key;
 
-            // 将默认 self_style 覆盖在默认 style 中
+            // 将默认 self_style 同名项覆盖在默认 style 中
             for (key in _option.self_style) {
                 _option.style[key] = _option.self_style[key];
             }
-            // 将用户自定义 self_style 覆盖在上一步操作后的 style 中
+            // 将用户自定义 self_style 同名项覆盖在上一步操作后的 style 中
             for (key in option.self_style) {
                 _option.style[key] = option.self_style[key];
             }
