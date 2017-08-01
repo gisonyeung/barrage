@@ -179,7 +179,7 @@ barrage.reset({
 ```Javascript
 @param text {string|object} 弹幕内容，可以是字符串，也可以是弹幕对象
 @param style {object} 弹幕样式，可选，默认使用全局配置项
-@param isNewAdd {boolean} 是否用户新增弹幕，可选，当传入 true 时弹幕将随机排列加入队列中并高亮显示，默认值为false
+@param isNewAdd {boolean} 是否用户新增弹幕，可选，当传入 true 时弹幕将随机排列加入队列中并高亮显示，默认值为 false。text.isSelf == 1 时相当于 isNewAdd 的值为1。
 ```
 立即将新弹幕加入到 DOM 中，此方法可用于添加需要即时显示的弹幕，例如用户发表弹幕时。
 

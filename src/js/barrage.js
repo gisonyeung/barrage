@@ -136,19 +136,14 @@
         this.playStatus = 0; // 播放状态
 
         this._init(); // 初始化位置
-
-        $(window).on('resize', function() {
+        this.resizeHandler = function() {
             self.setContainerSize({
                 width: self.container.width(),
                 height: self.container.height()
             })
-        });
+        }
 
-        // this.container.css({
-        //     transition: 'transform ' + this.showTime/500 + 's linear',
-        // })
-
-
+        $(window).on('resize', this.resizeHandler);
 
     }
 
@@ -630,6 +625,12 @@
         },
         clearData: function() {
             this.data = {};
+        },
+        destory: function() {
+            $(window).off('resize', this.resizeHandler);
+            this.data = null;
+            this.barragePool = null;
+            this.showData = null;
         },
 
 
