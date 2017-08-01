@@ -616,6 +616,7 @@
                 this.lineHeight = parseInt(props.lineHeight, 10) || this.lineHeight;
                 this.layout = props.layout || this.layout;
                 this._updateRowMeta();
+                this._updateShowData();
             }
         },
         switch: function() {
