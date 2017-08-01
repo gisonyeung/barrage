@@ -348,6 +348,7 @@
             this.rowNum = parseInt(this.meta.height * this._layoutMap[this.layout] / this.lineHeight, 10);
             this.rowMeta = Array(this.rowNum); // 记录每行宽度，用于瀑布流排布
             this._resetZero(this.rowMeta);
+
         },
         add: function (text, style, isNewAdd) {
 
@@ -417,7 +418,7 @@
 
             var ms = obj.ms || 0;
             opt.isSelf = obj.isSelf ? 1 : 0;
-            text = obj.tx;
+            var text = obj.tx;
             
             // 用户新发布的弹幕随机排列
             var min = this._findMinIndex();

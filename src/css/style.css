@@ -19,6 +19,7 @@ body {
 video {
     width: 100%;
     height: 235px;
+    transform: translate3d(0,0,0);
 
 }
 
