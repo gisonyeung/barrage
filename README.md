@@ -41,6 +41,7 @@ new Barrage(option);
 * **`lineHeight`**(Number): 弹幕行高，单位`px`，默认值`18`。
 * **`fontSize`**(Number): 字体大小，单位`px`，默认值`15`。
 * **`gapWidth`**(Number): 每条弹幕最小水平空隙，默认值`15`
+* **`discard`**(Boolean): 是否抛弃多余弹幕，默认值`ture`，一秒内的弹幕只排在一列之中，当设为`false`时将显示所有弹幕，可能存在弹幕消费不及时的情况。
 * **`cleanSetSize`**(Number): 待清理弹幕分包大小，当指定条数的弹幕展示完毕时，执行一次DOM清理，默认值`10`。
 * **`style`**(Object): 通用弹幕样式，可自定义弹幕样式，驼峰书写 CSS keyname，定义的样式会覆盖默认值的同名项。默认值：
 ```Javascript
@@ -174,10 +175,11 @@ barrage.reset({
 ```
 立即将指定秒数的弹幕加入 DOM 中，此方法不需要开发者主动调用，但在某些特殊场景可以使用。
 
-## .add(text[, style])
+## .add(text[, style, isNewAdd])
 ```Javascript
 @param text {string|object} 弹幕内容，可以是字符串，也可以是弹幕对象
 @param style {object} 弹幕样式，可选，默认使用全局配置项
+@param isNewAdd {boolean} 是否用户新增弹幕，可选，当传入 true 时弹幕将随机排列加入队列中并高亮显示，默认值为false
 ```
 立即将新弹幕加入到 DOM 中，此方法可用于添加需要即时显示的弹幕，例如用户发表弹幕时。
 
@@ -188,6 +190,10 @@ barrage.reset({
     "tx": "ganyiwei的测试弹幕_1127",
     "isSelf": 1 // 可选项，表示是否是用户自己发表的弹幕
 }
+```
+调用方法
+```Javascript
+barrage.add('新的弹幕', true);
 ```
 
 ## .removeDataByTimeRange(minSeconds, maxSeconds)

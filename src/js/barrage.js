@@ -65,6 +65,7 @@
             cleanSetSize: 10, // 清理集合分包大小，当指定条数展示完毕时，执行一次DOM清理
             maxLength: 30, // 弹幕长度限制，英文LEN=1 中文LEN=2，超过部分用...代替
             isHtmlEncode: true, // 是否转义 HTML 实体字符
+            discard: true, // 每秒弹幕过多时是否抛弃多余弹幕，默认抛弃，一秒内的弹幕只排在一列
             style: { // 普通弹幕样式
                 color: '#ffffff',
                 fontFamily: '黑体',
@@ -348,29 +349,39 @@
             this.rowMeta = Array(this.rowNum); // 记录每行宽度，用于瀑布流排布
             this._resetZero(this.rowMeta);
         },
-        add: function (text, style, fragment, isAuto) {
+        add: function (text, style, isNewAdd) {
 
             if (text == null) return false;
 
             var ms = 0;
             var opt = {};
 
-            if (this._typeof(text) === 'object') {
-                ms = text.ms || 0;
-                opt.isSelf = isAuto && !text.isSelf ? 0 : 1;
-                text = text.tx;
+            if (this._typeof(style) === 'boolean') {
+                isNewAdd = style;
             }
 
-            // 判断是否传入了 fragment，否则直接将弹幕 append 到弹幕容器
-            fragment = this._typeof(fragment) === 'array' ? fragment : this.container;
+            if (this._typeof(text) === 'object') {
+                ms = text.ms || 0;
+                opt.isSelf = !isNewAdd && !text.isSelf ? 0 : 1;
+                text = text.tx;
+            } else {
+                opt.isSelf = isNewAdd;
+            }
+
+
+            var fragment = this.container;
             
-            var min = this._findMinIndex();
+            // 用户新发布的弹幕随机排列
+            var min;
+            if (isNewAdd) {
+                min = this._randomRange(0, this.rowNum - 1);
+            } else {
+                min = this._findMinIndex();
+            }
+
             var msDistance = (ms % 1000) * this.msDiff;
-
-            
+    
             // left = 当前宽度距离 + 毫秒位移 + 缝隙宽度
-            
-
             opt.left = this.rowMeta[min] + msDistance + this.gapWidth;
             opt.top = min * this.lineHeight;
             opt.index = this.index++;
@@ -380,9 +391,9 @@
             }
             var br_dom = $(this._createBarrage(opt, style));
             fragment.append(br_dom);
-            this.barragePool[opt.index] = { 
-                dom: br_dom, 
-                width: this._getBarrageWidth(cutResult.realLen) , 
+            this.barragePool[opt.index] = {
+                dom: br_dom,
+                width: this._getBarrageWidth(cutResult.realLen),
                 rowIndex: min,
             };
             this.barragePool[opt.index].placeWidth = this.barragePool[opt.index].width + msDistance + this.gapWidth;
@@ -399,6 +410,46 @@
             // this._timerForRemove(opt.index);
             return br_dom;
         },
+        _add: function(obj, fragment) {
+            if (obj == null) return false;
+
+            var opt = {}
+
+            var ms = obj.ms || 0;
+            opt.isSelf = obj.isSelf ? 1 : 0;
+            text = obj.tx;
+            
+            // 用户新发布的弹幕随机排列
+            var min = this._findMinIndex();
+            var msDistance = (ms % 1000) * this.msDiff;
+            // left = 当前宽度距离 + 毫秒位移 + 缝隙宽度
+            opt.left = this.rowMeta[min] + msDistance + this.gapWidth;
+            opt.top = min * this.lineHeight;
+            opt.index = this.index++;
+            var cutResult = this._cutString(text);
+            if (this.isHtmlEncode) {
+                opt.text = this._htmlEncode(cutResult.text);
+            }
+            var br_dom = $(this._createBarrage(opt));
+            fragment.append(br_dom);
+            this.barragePool[opt.index] = {
+                dom: br_dom,
+                width: this._getBarrageWidth(cutResult.realLen),
+                rowIndex: min,
+            };
+            this.barragePool[opt.index].placeWidth = this.barragePool[opt.index].width + msDistance + this.gapWidth;
+            this.rowMeta[min] += this.barragePool[opt.index].placeWidth;
+            this.barragePool[opt.index].endDistance = this.rowMeta[min];
+
+            if (this.stopAnimation) {
+                this.stopAnimation = false;
+                this._safeTick();
+            }
+
+            this._enqueueToDelete(opt.index);
+
+            return br_dom;
+        },
         pushData: function (items, isCover) {
             var data = this.data;
             if (this._typeof(items) === 'array') {
@@ -407,7 +458,12 @@
                     if ( this._typeof(data[item.sec]) === 'array' ) {
                         data[item.sec] = data[item.sec].concat(item.bl);
                     } else if ( this._typeof(data[item.sec] === 'undefined') ) {
-                        data[item.sec] = [].concat(item.bl);
+                        if (this.discard) {
+                            // 抛弃多余弹幕
+                            data[item.sec] = [].concat(item.bl.slice(0, this.rowNum));
+                        } else {
+                            data[item.sec] = [].concat(item.bl);
+                        }
                     }
                 }
             } else if (this._typeof(items) === 'object') {
@@ -433,7 +489,7 @@
             if (this._typeof(this.data[seconds]) === 'array') {
                 var fragment = $(document.createDocumentFragment());
                 for (var i = 0; i < items.length; i++) {
-                    this.add(items[i], undefined, fragment, true);
+                    this._add(items[i], fragment);
                 }
                 this.container.append(fragment);
                 fragment = null;
