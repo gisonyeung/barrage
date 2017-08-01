@@ -46,6 +46,11 @@ var barrage_json = [
                 "ms": 0,
                 "tx": "ganyiwei的测试弹幕_1127",
                 "isSelf": 1
+            },
+            {
+                "ms": 0,
+                "tx": "ganyiwei的测试弹幕_1127",
+                "isSelf": 1
             }
         ]
     },

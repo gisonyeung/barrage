@@ -123,6 +123,7 @@
         // 弹幕行数
         this.barragePool = {}; // 弹幕缓存池，存储变量到DOM的映射
         this.data = {}; // 弹幕data，key:seconds value:barrage array
+        this.showData = {}; // 当前规则下允许显示的弹幕
         this.index = 0; // 弹幕ID下标
         this.timerId = null; // 弹幕轮询计时器ID
         this.tickId = null; // 弹幕rAF动画ID
@@ -348,7 +349,57 @@
             this.rowNum = parseInt(this.meta.height * this._layoutMap[this.layout] / this.lineHeight, 10);
             this.rowMeta = Array(this.rowNum); // 记录每行宽度，用于瀑布流排布
             this._resetZero(this.rowMeta);
+        },
+        _updateShowData: function() {
+            var items;
+            var data = this.data;
+            var i;
+            this.showData = {};
+            for (var sec in data) {
+                items = data[sec].slice(0, this.rowNum);
+                // 在抛弃部分找到 isSelf 为 1 的弹幕
+                if (data[sec].length > items.length) {
+                    for (i = items.length; i < data[sec].length; i++) {
+                        if (data[sec][i].isSelf) {
+                            items.push(data[sec][i]);
+                        }
+                    }
+                }
+                this.showData[sec] = items;
+            }
+            items = null;
+            data = null;
+        },
+        _pushShowData: function(sec, bl, isCover) {
 
+            var showData = this.showData;
+            var data = this.data;
+            var blLen = bl.length;
+            var lenDiff = showData[sec].length - data[sec].length;
+            var i;
+
+            if (lenDiff < -blLen && !isCover) { // 超出部分已经走过抛弃规则，直接增量添加
+                for (i = 0; i < blLen; i++) {
+                    if (bl[i].isSelf) {
+                        showData[sec].push(bl[i]);
+                    }
+                }
+            } else {
+                var remainData;
+
+                showData[sec] = data[sec].slice(0, this.rowNum);
+                remainData = data[sec].slice(this.rowNum);
+
+                for (i = 0; i < remainData.length; i++) {
+                    if (remainData[i].isSelf) {
+                        showData[sec].push(remainData[i]);
+                    }
+                }
+            }
+
+
+            showData = null;
+            data = null;
         },
         add: function (text, style, isNewAdd) {
 
@@ -459,20 +510,17 @@
                     if ( this._typeof(data[item.sec]) === 'array' ) {
                         data[item.sec] = data[item.sec].concat(item.bl);
                     } else if ( this._typeof(data[item.sec] === 'undefined') ) {
-                        if (this.discard) {
-                            // 抛弃多余弹幕
-                            data[item.sec] = [].concat(item.bl.slice(0, this.rowNum));
-                        } else {
-                            data[item.sec] = [].concat(item.bl);
-                        }
+                        data[item.sec] = [].concat(item.bl);
                     }
                 }
+                this._updateShowData();
             } else if (this._typeof(items) === 'object') {
                 if ( this._typeof(data[items.sec]) === 'array' ) {
                     data[items.sec] = isCover ? items.bl : data[items.sec].concat(items.bl);
                 } else if ( this._typeof(data[items.sec] === 'undefined') ) {
                     data[items.sec] = [].concat(items.bl);
                 }
+                this._pushShowData(items.sec, items.bl, isCover);
             }
         },
         removeDataByTimeRange: function (minSeconds, maxSeconds) {
@@ -486,8 +534,8 @@
             return !!this.data[seconds].length;
         },
         showByTime: function (seconds) {
-            var items = this.data[seconds];
-            if (this._typeof(this.data[seconds]) === 'array') {
+            var items = this.showData[seconds];
+            if (this._typeof(this.showData[seconds]) === 'array') {
                 var fragment = $(document.createDocumentFragment());
                 for (var i = 0; i < items.length; i++) {
                     this._add(items[i], fragment);
